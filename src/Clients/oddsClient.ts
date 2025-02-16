@@ -5,31 +5,17 @@ const api = axios.create({
 });
 const NODE_API = process.env.REACT_APP_BASE_API;
 
-export const findPositiveEvBets = async (
-    live: boolean, leagueID: string, minOdds: number, maxOdds: number, minEV: number
+export const findGoodBets = async (
+    live: boolean, leagueID: string, minOdds: number, maxOdds: number, minEV: number, comparePinnacle: boolean
 ) => {
-  const response = await api.get(`${NODE_API}/positive-ev-bets`, {
+  const response = await api.get(`${NODE_API}/good-bets`, {
     params: {
       live,
       leagueID,
       minOdds,
       maxOdds,
       minEV,
-    },
-  });
-  return response.data;
-}
-
-export const findPinnyBets = async (
-    live: boolean, leagueID: string, minOdds: number, maxOdds: number, minEV: number
-) => {
-  const response = await api.get(`${NODE_API}/pinny-bets`, {
-    params: {
-      live,
-      leagueID,
-      minOdds,
-      maxOdds,
-      minEV,
+      comparePinnacle,
     },
   });
   return response.data;
@@ -37,7 +23,6 @@ export const findPinnyBets = async (
 
 export const fetchAccountLimits = async () => {
   const response = await api.get(`${NODE_API}/limits`);
-  console.log(response.data);
   return parseFloat((response.data['rateLimits']['per-month']['current-entities'] /
       response.data['rateLimits']['per-month']['max-entities'] * 100).toFixed(1));
 }

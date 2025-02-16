@@ -8,9 +8,9 @@ import {
   FormSelect, ProgressBar,
   Row
 } from "react-bootstrap";
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import EventList from "../Components/EventList";
-import {fetchAccountLimits, findPinnyBets, findPositiveEvBets} from "../Clients/oddsClient";
+import {fetchAccountLimits, findGoodBets} from "../Clients/oddsClient";
 
 export default function Home() {
   const [events, setEvents] = useState([]);
@@ -24,10 +24,6 @@ export default function Home() {
   const [maxOdds, setMaxOdds] = useState(300);
   const [minEV, setMinEV] = useState(0.0);
 
-  useEffect( () => {
-    fetchLimits();
-  }, []);
-
   const fetchLimits = async () => {
     const res = await fetchAccountLimits();
     if (res) {
@@ -40,18 +36,18 @@ export default function Home() {
       setIsSearchComplete(false);
       setEvents([]);
       setError(undefined);
-      const res = isPinny ?
-          await findPinnyBets(isLive, leagueID, minOdds, maxOdds, minEV / 100) :
-          await findPositiveEvBets(isLive, leagueID, minOdds, maxOdds, minEV / 100);
+      const res = await findGoodBets(isLive, leagueID, minOdds, maxOdds, minEV / 100, isPinny);
       if (res) {
         setEvents(res);
         setIsSearchComplete(true);
-        fetchLimits();
       }
     } catch (err: any) {
-      setError(err);
+      if (err.message.includes('404')) {
+        setEvents([]);
+      } else {
+        setError(err);
+      }
       setIsSearchComplete(true);
-      fetchLimits();
     }
   }
 
@@ -92,11 +88,16 @@ export default function Home() {
                            onChange={(e) => setMinEV(parseFloat(e.target.value))}/>
             </FloatingLabel>
           </div>
-          <Button variant="primary" onClick={fetchEvents} className="mt-2">Find Bets</Button>
+          <div className="d-flex">
+            <Button variant="primary" onClick={fetchEvents} className="mt-2">Find Bets</Button>
+            <Button variant="outline-primary" onClick={fetchLimits} className="mt-2 ms-4">Check
+              Limit</Button>
+          </div>
         </Form>
-        {apiLimit && <ProgressBar className="mb-4" now={apiLimit} label={`${apiLimit}%`}/>}
+        {apiLimit !== 0 && <ProgressBar className="mb-4" now={apiLimit} label={`${apiLimit}%`}/>}
         {isSearchComplete && events.length > 0 && <EventList events={events} isPinny={isPinny}/>}
-        {isSearchComplete && events.length === 0 && <div className="text-white">No search results found...</div>}
+        {isSearchComplete && events.length === 0 &&
+            <div className="text-white">No search results found...</div>}
       </Container>
   );
 }

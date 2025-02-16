@@ -1,6 +1,8 @@
 import {FaCircle} from "react-icons/fa";
 
 export default function EventTitle({event}: { event: any }) {
+  const startDate = new Date(event.startsAt);
+
   return (
       <div className="ms-2 mb-2 text-white">
         <FaCircle style={{
@@ -15,6 +17,10 @@ export default function EventTitle({event}: { event: any }) {
           "border": "solid white 2px",
           "borderRadius": "50%"
         }}/>
+        <div className="text-white-50">
+          {startDate.toDateString()} - {startDate.toLocaleTimeString().slice(0, -6)}
+          {startDate.toLocaleTimeString().slice(-3)}
+        </div>
       </div>
   );
 }

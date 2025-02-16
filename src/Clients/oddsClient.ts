@@ -34,3 +34,10 @@ export const findPinnyBets = async (
   });
   return response.data;
 }
+
+export const fetchAccountLimits = async () => {
+  const response = await api.get(`${NODE_API}/limits`);
+  console.log(response.data);
+  return parseFloat((response.data['rateLimits']['per-month']['current-entities'] /
+      response.data['rateLimits']['per-month']['max-entities'] * 100).toFixed(1));
+}

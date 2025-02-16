@@ -5,15 +5,16 @@ import {
   FloatingLabel,
   Form,
   FormCheck, FormControl,
-  FormSelect,
+  FormSelect, ProgressBar,
   Row
 } from "react-bootstrap";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import EventList from "../Components/EventList";
-import {findPinnyBets, findPositiveEvBets} from "../Clients/oddsClient";
+import {fetchAccountLimits, findPinnyBets, findPositiveEvBets} from "../Clients/oddsClient";
 
 export default function Home() {
   const [events, setEvents] = useState([]);
+  const [apiLimit, setApiLimit] = useState(0);
   const [isSearchComplete, setIsSearchComplete] = useState(false);
   const [error, setError] = useState<Error>();
   const [isLive, setIsLive] = useState(false);
@@ -22,6 +23,17 @@ export default function Home() {
   const [minOdds, setMinOdds] = useState(-400);
   const [maxOdds, setMaxOdds] = useState(300);
   const [minEV, setMinEV] = useState(0.0);
+
+  useEffect( () => {
+    fetchLimits();
+  }, []);
+
+  const fetchLimits = async () => {
+    const res = await fetchAccountLimits();
+    if (res) {
+      setApiLimit(res);
+    }
+  }
 
   const fetchEvents = async () => {
     try {
@@ -34,10 +46,12 @@ export default function Home() {
       if (res) {
         setEvents(res);
         setIsSearchComplete(true);
+        fetchLimits();
       }
     } catch (err: any) {
       setError(err);
       setIsSearchComplete(true);
+      fetchLimits();
     }
   }
 
@@ -80,6 +94,7 @@ export default function Home() {
           </div>
           <Button variant="primary" onClick={fetchEvents} className="mt-2">Find Bets</Button>
         </Form>
+        {apiLimit && <ProgressBar className="mb-4" now={apiLimit} label={`${apiLimit}%`}/>}
         {isSearchComplete && events.length > 0 && <EventList events={events} isPinny={isPinny}/>}
         {isSearchComplete && events.length === 0 && <div className="text-white">No search results found...</div>}
       </Container>

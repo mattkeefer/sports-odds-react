@@ -1,25 +1,43 @@
-import {Alert, Button, Container, Form, FormCheck, FormSelect, Row} from "react-bootstrap";
+import {
+  Alert,
+  Button,
+  Container,
+  FloatingLabel,
+  Form,
+  FormCheck, FormControl,
+  FormSelect,
+  Row
+} from "react-bootstrap";
 import {useState} from "react";
 import EventList from "../Components/EventList";
 import {findPinnyBets, findPositiveEvBets} from "../Clients/oddsClient";
 
 export default function Home() {
   const [events, setEvents] = useState([]);
+  const [isSearchComplete, setIsSearchComplete] = useState(false);
   const [error, setError] = useState<Error>();
-  const [isLive, setIsLive] = useState(true);
-  const [isPinny, setIsPinny] = useState(false);
+  const [isLive, setIsLive] = useState(false);
+  const [isPinny, setIsPinny] = useState(true);
   const [leagueID, setLeagueID] = useState("NBA");
+  const [minOdds, setMinOdds] = useState(-400);
+  const [maxOdds, setMaxOdds] = useState(300);
+  const [minEV, setMinEV] = useState(0.0);
 
   const fetchEvents = async () => {
     try {
+      setIsSearchComplete(false);
       setEvents([]);
       setError(undefined);
-      const res = isPinny ? await findPinnyBets(isLive, leagueID) : await findPositiveEvBets(isLive, leagueID);
+      const res = isPinny ?
+          await findPinnyBets(isLive, leagueID, minOdds, maxOdds, minEV / 100) :
+          await findPositiveEvBets(isLive, leagueID, minOdds, maxOdds, minEV / 100);
       if (res) {
         setEvents(res);
+        setIsSearchComplete(true);
       }
     } catch (err: any) {
       setError(err);
+      setIsSearchComplete(true);
     }
   }
 
@@ -29,12 +47,11 @@ export default function Home() {
           <h1>Profitable Bet Finder</h1>
         </Row>
         {error && <Alert variant="danger">{error.message}</Alert>}
-        {events && <EventList events={events}/>}
-        <Form className="my-4 col-3">
-          <div className="d-flex justify-content-between">
+        <Form className="mb-4 col-4">
+          <div className="d-flex mb-2">
             <FormCheck type="checkbox" label="Live Events" checked={isLive}
                        onClick={() => setIsLive(!isLive)}/>
-            <FormCheck type="checkbox" label="Pinny" checked={isPinny}
+            <FormCheck className="ms-4" type="checkbox" label="Pinny" checked={isPinny}
                        onClick={() => setIsPinny(!isPinny)}/>
           </div>
           <FormSelect value={leagueID} onChange={(e) => setLeagueID(e.target.value)}>
@@ -47,8 +64,24 @@ export default function Home() {
             <option value="UEFA_CHAMPIONS_LEAGUE">Champions League</option>
             <option value="INTERNATIONAL_SOCCER">International Soccer</option>
           </FormSelect>
-          <Button variant="primary" onClick={fetchEvents} className="mt-3">Find Bets</Button>
+          <div className="d-flex my-2">
+            <FloatingLabel label="Min Odds">
+              <FormControl type="number" value={minOdds}
+                           onChange={(e) => setMinOdds(parseInt(e.target.value))}/>
+            </FloatingLabel>
+            <FloatingLabel label="Max Odds">
+              <FormControl type="number" value={maxOdds}
+                           onChange={(e) => setMaxOdds(parseInt(e.target.value))}/>
+            </FloatingLabel>
+            <FloatingLabel label="Min EV">
+              <FormControl type="number" value={minEV}
+                           onChange={(e) => setMinEV(parseFloat(e.target.value))}/>
+            </FloatingLabel>
+          </div>
+          <Button variant="primary" onClick={fetchEvents} className="mt-2">Find Bets</Button>
         </Form>
+        {isSearchComplete && events.length > 0 && <EventList events={events} isPinny={isPinny}/>}
+        {isSearchComplete && events.length === 0 && <div className="text-white">No search results found...</div>}
       </Container>
   );
 }

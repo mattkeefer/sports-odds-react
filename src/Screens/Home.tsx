@@ -23,6 +23,7 @@ export default function Home() {
   const [minOdds, setMinOdds] = useState(-400);
   const [maxOdds, setMaxOdds] = useState(300);
   const [minEV, setMinEV] = useState(0.0);
+  const [bankroll, setBankRoll] = useState(1000);
 
   const fetchLimits = async () => {
     const res = await fetchAccountLimits();
@@ -36,7 +37,7 @@ export default function Home() {
       setIsSearchComplete(false);
       setEvents([]);
       setError(undefined);
-      const res = await findGoodBets(isLive, leagueID, minOdds, maxOdds, minEV / 100, isPinny);
+      const res = await findGoodBets(isLive, leagueID, minOdds, maxOdds, minEV / 100, isPinny, bankroll);
       if (res) {
         setEvents(res);
         setIsSearchComplete(true);

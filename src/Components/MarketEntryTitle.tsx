@@ -1,0 +1,24 @@
+import {Badge} from "react-bootstrap";
+
+export default function MarketEntryTitle({marketEntry}: { marketEntry: any }) {
+  return (
+      <div className="row">
+        <div className="col-3">{marketEntry.marketName}</div>
+        <div className="col">{marketEntry.sideID}</div>
+        <div className="col">
+          Fair: {marketEntry.fairOdds > 0 && '+'}{marketEntry.fairOdds}
+          {marketEntry.fairOverUnder && `, o/u: ${marketEntry.fairOverUnder}`}
+        </div>
+        <div className="col">
+          Avg: {marketEntry.bookOdds > 0 && '+'}{marketEntry.bookOdds}
+          {marketEntry.bookOverUnder && `, o/u: ${marketEntry.bookOverUnder}`}
+        </div>
+        {marketEntry.pinnyOdds &&
+            <div className="col">
+              Pinny: {marketEntry.pinnyOdds > 0 && '+'}{marketEntry.pinnyOdds}
+              {marketEntry.pinnyOverUnder && `, o/u: ${marketEntry.pinnyOverUnder}`}
+            </div>
+        }
+      </div>
+  );
+}

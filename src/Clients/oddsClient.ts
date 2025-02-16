@@ -6,7 +6,7 @@ const api = axios.create({
 const NODE_API = process.env.REACT_APP_BASE_API;
 
 export const findGoodBets = async (
-    live: boolean, leagueID: string, minOdds: number, maxOdds: number, minEV: number, comparePinnacle: boolean
+    live: boolean, leagueID: string, minOdds: number, maxOdds: number, minEV: number, comparePinnacle: boolean, bankroll: number,
 ) => {
   const response = await api.get(`${NODE_API}/good-bets`, {
     params: {
@@ -16,6 +16,7 @@ export const findGoodBets = async (
       maxOdds,
       minEV,
       comparePinnacle,
+      bankroll,
     },
   });
   return response.data;

@@ -83,7 +83,7 @@ export default function Home() {
                 <FormControl type="number" value={minOdds}
                              onChange={(e) => setMinOdds(parseInt(e.target.value))}/>
               </FloatingLabel>
-              <FloatingLabel label="Max Odds">
+              <FloatingLabel className="mx-2" label="Max Odds">
                 <FormControl type="number" value={maxOdds}
                              onChange={(e) => setMaxOdds(parseInt(e.target.value))}/>
               </FloatingLabel>
@@ -98,7 +98,7 @@ export default function Home() {
                 Limit</Button>
             </div>
           </Form>
-          <div className="col-4"></div>
+          <div className="col"></div>
           <Form className="col-4">
             <Row>
               <Col >

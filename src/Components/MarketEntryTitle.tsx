@@ -4,7 +4,7 @@ export default function MarketEntryTitle({marketEntry}: { marketEntry: any }) {
   return (
       <div className="row">
         <div className="col-3">{marketEntry.marketName}</div>
-        <div className="col">{marketEntry.sideID}</div>
+        <div className="col-2">{marketEntry.sideID.charAt(0).toUpperCase() + marketEntry.sideID.slice(1)}</div>
         <div className="col">
           Fair: {marketEntry.fairOdds > 0 && '+'}{marketEntry.fairOdds}
           {marketEntry.fairOverUnder && `, o/u: ${marketEntry.fairOverUnder}`}

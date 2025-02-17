@@ -76,6 +76,8 @@ export default function Home() {
               <option value="NHL">NHL</option>
               <option value="MLS">MLS</option>
               <option value="EPL">Premier League</option>
+              <option value="NCAAF">NCAA Football</option>
+              <option value="NCAAB">NCAA Basketball</option>
               <option value="UEFA_CHAMPIONS_LEAGUE">Champions League</option>
               <option value="INTERNATIONAL_SOCCER">International Soccer</option>
             </FormSelect>

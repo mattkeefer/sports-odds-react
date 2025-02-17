@@ -26,6 +26,7 @@ export default function Home() {
   const [minEV, setMinEV] = useState(0.0);
   const [bankroll, setBankroll] = useState(1000);
   const [limit, setLimit] = useState(1);
+  const [startsBefore, setStartsBefore] = useState("");
 
   const fetchLimits = async () => {
     const res = await fetchAccountLimits();
@@ -39,7 +40,7 @@ export default function Home() {
       setIsSearchComplete(false);
       setEvents([]);
       setError(undefined);
-      const res = await findGoodBets(isLive, leagueID, minOdds, maxOdds, minEV / 100, isPinny, bankroll, limit);
+      const res = await findGoodBets(isLive, leagueID, minOdds, maxOdds, minEV / 100, isPinny, bankroll, limit, startsBefore);
       if (res) {
         setEvents(res);
         setIsSearchComplete(true);
@@ -64,9 +65,9 @@ export default function Home() {
           <Form className="mb-4 col-4">
             <div className="d-flex mb-2">
               <FormCheck type="checkbox" label="Live Events" checked={isLive}
-                         onClick={() => setIsLive(!isLive)}/>
+                         onChange={() => setIsLive(!isLive)}/>
               <FormCheck className="ms-4" type="checkbox" label="Pinny" checked={isPinny}
-                         onClick={() => setIsPinny(!isPinny)}/>
+                         onChange={() => setIsPinny(!isPinny)}/>
             </div>
             <FormSelect value={leagueID} onChange={(e) => setLeagueID(e.target.value)}>
               <option value="NBA">NBA</option>
@@ -101,7 +102,7 @@ export default function Home() {
           <div className="col"></div>
           <Form className="col-4">
             <Row>
-              <Col >
+              <Col>
                 <InputGroup className="mb-2">
                   <InputGroupText>$</InputGroupText>
                   <FloatingLabel label="Bankroll">
@@ -114,6 +115,14 @@ export default function Home() {
                 <FloatingLabel label="# of Events">
                   <FormControl type="number" value={limit}
                                onChange={(e) => setLimit(parseInt(e.target.value))}/>
+                </FloatingLabel>
+              </Col>
+            </Row>
+            <Row>
+              <Col>
+                <FloatingLabel label="Starts Before">
+                  <FormControl type="date" value={startsBefore}
+                               onChange={(e) => setStartsBefore(e.target.value)}/>
                 </FloatingLabel>
               </Col>
             </Row>

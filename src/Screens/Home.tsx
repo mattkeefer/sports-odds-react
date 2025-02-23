@@ -19,7 +19,7 @@ export default function Home() {
   const [isSearchComplete, setIsSearchComplete] = useState(false);
   const [error, setError] = useState<Error>();
   const [isLive, setIsLive] = useState(false);
-  const [isPinny, setIsPinny] = useState(true);
+  const [isPinny, setIsPinny] = useState(false);
   const [leagueID, setLeagueID] = useState("NBA");
   const [minOdds, setMinOdds] = useState(-400);
   const [maxOdds, setMaxOdds] = useState(300);

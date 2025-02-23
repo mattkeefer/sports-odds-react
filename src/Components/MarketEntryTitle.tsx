@@ -1,5 +1,3 @@
-import {Badge} from "react-bootstrap";
-
 export default function MarketEntryTitle({marketEntry}: { marketEntry: any }) {
   return (
       <div className="row">
@@ -13,12 +11,6 @@ export default function MarketEntryTitle({marketEntry}: { marketEntry: any }) {
           Avg: {marketEntry.bookOdds > 0 && '+'}{marketEntry.bookOdds}
           {marketEntry.bookOverUnder && `, o/u: ${marketEntry.bookOverUnder}`}
         </div>
-        {marketEntry.pinnyOdds &&
-            <div className="col">
-              Pinny: {marketEntry.pinnyOdds > 0 && '+'}{marketEntry.pinnyOdds}
-              {marketEntry.pinnyOverUnder && `, o/u: ${marketEntry.pinnyOverUnder}`}
-            </div>
-        }
       </div>
   );
 }
